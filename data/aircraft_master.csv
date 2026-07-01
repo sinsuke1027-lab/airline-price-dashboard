@@ -1,0 +1,14 @@
+aircraft_name,seats,body_type,notes
+Airbus A321neo,200,narrow,ダミー値 - 実際は180〜220席
+Airbus A321,180,narrow,ダミー値 - 実際は180〜220席
+Airbus A320,165,narrow,ダミー値 - 実際は150〜165席
+Airbus A320neo,165,narrow,ダミー値 - 実際は150〜180席
+Airbus A330,270,wide,ダミー値 - 実際は240〜300席
+Airbus A330-900neo,280,wide,ダミー値 - 実際は260〜300席
+Airbus A350,330,wide,ダミー値 - 実際は300〜350席
+Boeing 737,165,narrow,ダミー値 - 実際は150〜180席
+Boeing 737MAX 8 Passenger,170,narrow,ダミー値 - 実際は162〜178席
+Boeing 767,250,wide,ダミー値 - 実際は200〜270席
+Boeing 777,350,wide,ダミー値 - 実際は300〜400席
+Boeing 787,260,wide,ダミー値 - 実際は240〜290席
+Boeing 787-10,280,wide,ダミー値 - 実際は300〜330席

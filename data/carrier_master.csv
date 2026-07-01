@@ -1,0 +1,20 @@
+airline_name,iata_code,carrier_type,home_country
+ANA,NH,FSC,Japan
+JAL,JL,FSC,Japan
+Peach,MM,LCC,Japan
+キャセイパシフィック航空,CX,FSC,Hong Kong
+香港航空,HX,FSC,Hong Kong
+香港エクスプレス航空,UO,LCC,Hong Kong
+Greater Bay Airlines,HB,LCC,Hong Kong
+大韓航空,KE,FSC,Korea
+アシアナ航空,OZ,FSC,Korea
+チェジュ航空,7C,LCC,Korea
+ティーウェイ航空,TW,LCC,Korea
+エバー航空,BR,FSC,Taiwan
+チャイナ エアライン,CI,FSC,Taiwan
+STARLUX Airlines,JX,FSC,Taiwan
+フィリピン航空,PR,FSC,Philippines
+セブパシフィック航空,5J,LCC,Philippines
+中国国際航空,CA,FSC,China
+中国東方航空,MU,FSC,China
+山東航空,SC,FSC,China
