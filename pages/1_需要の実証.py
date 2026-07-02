@@ -86,8 +86,9 @@ with tab1:
             _z_fb.append(_zr); _txt_fb.append(_tr)
         fig_heat = go.Figure(go.Heatmap(
             z=_z_fb, x=_dates_fb, y=_routes_fb, text=_txt_fb, texttemplate="%{text}",
-            colorscale=[[0, "#4DC4FF"], [0.5, "#FFFFFF"], [1.0, "#FF4B00"]],
+            colorscale=[[0, "#FFFFFF"], [1.0, "#FF4B00"]],
             zmin=1, zmax=3, showscale=False,
+            textfont=dict(color="black"),
             hovertemplate="路線: %{y}<br>日付: %{x}<br>%{text}<extra></extra>",
         ))
         fig_heat.update_layout(
@@ -126,11 +127,12 @@ with tab1:
 
         fig_heat = go.Figure(go.Heatmap(
             z=_z, x=_months_h, y=_routes_h, text=_txt, texttemplate="%{text}",
-            colorscale=[[0, "#4DC4FF"], [0.5, "#FFFFFF"], [1.0, "#FF4B00"]],
+            colorscale=[[0, "#FFFFFF"], [1.0, "#FF4B00"]],
             zmin=0, zmax=100, showscale=True,
             colorbar=dict(title="高騰率(%)", thickness=12, len=0.75,
                           tickvals=[0, 50, 100],
-                          ticktext=["0% 低", "50%", "100% 高騰"]),
+                          ticktext=["0%", "50%", "100%"]),
+            textfont=dict(color="black"),
             hovertemplate="路線: %{y}<br>搭乗月: %{x}<br>%{text}<extra></extra>",
         ))
 
@@ -361,8 +363,7 @@ with tab2:
         _p_min, _p_max = (min(_pv_all), max(_pv_all)) if _pv_all else (0, 1)
         _p_rng = _p_max - _p_min or 1
         def _fc_p(v):
-            n = (v - _p_min) / _p_rng
-            return "white" if (n < 0.22 or n > 0.78) else "black"
+            return "black"
 
         _cv_all = [v for v in _c_dict.values() if v > 0]
         _c_min, _c_max = (min(_cv_all), max(_cv_all)) if _cv_all else (0, 1)
@@ -399,7 +400,7 @@ with tab2:
             _fig.add_trace(go.Heatmap(
                 z=_zp, x=["価格"], y=_y_labels,
                 customdata=_cdp,
-                colorscale=[[0,"#4DC4FF"],[0.5,"#FFFFFF"],[1.0,"#FF4B00"]],
+                colorscale=[[0,"#FFFFFF"],[1.0,"#FF4B00"]],
                 zmin=_p_min, zmax=_p_max,
                 showscale=(_ri == 0),
                 colorbar=dict(title="円", thickness=10, len=0.45, x=1.02, y=0.9, yanchor="top"),
