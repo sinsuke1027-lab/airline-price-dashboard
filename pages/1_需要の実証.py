@@ -86,7 +86,7 @@ with tab1:
             _z_fb.append(_zr); _txt_fb.append(_tr)
         fig_heat = go.Figure(go.Heatmap(
             z=_z_fb, x=_dates_fb, y=_routes_fb, text=_txt_fb, texttemplate="%{text}",
-            colorscale=[[0, "#4DC4FF"], [0.5, "#F6AA00"], [1.0, "#FF4B00"]],
+            colorscale=[[0, "#4DC4FF"], [0.5, "#FFFFFF"], [1.0, "#FF4B00"]],
             zmin=1, zmax=3, showscale=False,
             hovertemplate="路線: %{y}<br>日付: %{x}<br>%{text}<extra></extra>",
         ))
@@ -126,11 +126,11 @@ with tab1:
 
         fig_heat = go.Figure(go.Heatmap(
             z=_z, x=_months_h, y=_routes_h, text=_txt, texttemplate="%{text}",
-            colorscale=[[0, "#4DC4FF"], [0.25, "#F6AA00"], [0.55, "#FF4B00"], [1.0, "#990099"]],
+            colorscale=[[0, "#4DC4FF"], [0.5, "#FFFFFF"], [1.0, "#FF4B00"]],
             zmin=0, zmax=100, showscale=True,
             colorbar=dict(title="高騰率(%)", thickness=12, len=0.75,
-                          tickvals=[0, 25, 50, 75, 100],
-                          ticktext=["0% 低", "25%", "50%", "75%", "100% 全高騰"]),
+                          tickvals=[0, 50, 100],
+                          ticktext=["0% 低", "50%", "100% 高騰"]),
             hovertemplate="路線: %{y}<br>搭乗月: %{x}<br>%{text}<extra></extra>",
         ))
 
@@ -399,7 +399,7 @@ with tab2:
             _fig.add_trace(go.Heatmap(
                 z=_zp, x=["価格"], y=_y_labels,
                 customdata=_cdp,
-                colorscale=[[0,"#005AFF"],[0.35,"#4DC4FF"],[0.55,"#F9F9F9"],[1.0,"#FF4B00"]],
+                colorscale=[[0,"#4DC4FF"],[0.5,"#FFFFFF"],[1.0,"#FF4B00"]],
                 zmin=_p_min, zmax=_p_max,
                 showscale=(_ri == 0),
                 colorbar=dict(title="円", thickness=10, len=0.45, x=1.02, y=0.9, yanchor="top"),
@@ -647,7 +647,7 @@ with tab3:
             z=_z_rev,
             x=_rev_routes,
             y=_y_rev,
-            colorscale=[[0, "#F0F8FF"], [0.4, "#4DC4FF"], [0.75, "#005AFF"], [1.0, "#990099"]],
+            colorscale=[[0, "#E8F4FD"], [0.5, "#4DC4FF"], [1.0, "#005AFF"]],
             showscale=True,
             colorbar=dict(title="万円", thickness=12, len=0.8),
             hovertemplate="<b>%{y}</b> / <b>%{x}</b><br>収益概算: ¥%{z:,}万<extra></extra>",
