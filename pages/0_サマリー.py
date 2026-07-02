@@ -8,7 +8,7 @@ from utils.loader import load_flights, route_summary, latest_flights
 from utils.constants import IATA_COLOR
 
 st.set_page_config(page_title="サマリー", layout="wide", page_icon="🗺️")
-st.title("HKG発3路線 就航余地サマリー")
+st.title("HKG発3路線 参入余地サマリー")
 st.caption("中部空港（NGO）への路線誘致提案のための根拠ダッシュボード。全ページの結論を1枚で俯瞰できます。")
 
 flights = load_flights()
@@ -58,7 +58,7 @@ if not ngo.empty and not kix.empty:
     if ngo_lcc.empty:
         msgs.append("LCC未就航（KIXには複数就航）")
     if msgs:
-        st.error("🔴 **NGOは3路線中で最も就航余地が大きい** — " + "　／　".join(msgs))
+        st.error("🔴 **NGOは3路線中で最も参入余地が大きい** — " + "　／　".join(msgs))
 else:
     st.info("NGOまたはKIXのデータがありません。")
 
@@ -80,7 +80,7 @@ for col, route in zip(kpi_cols, routes_sorted):
         f"<div style='border-left:4px solid {IATA_COLOR.get(arr,'#888')};padding:8px 12px'>"
         f"<b style='font-size:1.1em'>{route}</b><br>"
         f"高騰率: <b>{r['high_rate']:.0f}%</b> （{r['high_days']}/{r['total_days']}日）<br>"
-        f"典型上限: <b>¥{r['avg_typical_high']:,.0f}</b><br>"
+        f"典型価格帯上限: <b>¥{r['avg_typical_high']:,.0f}</b><br>"
         f"平均便数: <b>{r['avg_flights']:.1f}便/日</b><br>"
         f"直行便比率: <b>{r['直行便比率']:.0f}%</b><br>"
         f"LCC就航: <b>{lcc_cnt}社</b>"
@@ -93,17 +93,17 @@ st.markdown("---")
 # ── 需要シグナル強度 ──────────────────────────────────────
 st.markdown("### 需要シグナル強度")
 st.caption(
-    "「🔴 強」= 便数も少ない（供給不足の可能性高）、"
-    "「🟡 中」= 高騰しているが便数は多い（運賃戦略の影響も考慮が必要）"
+    "「🔴 強（便数少＋高騰）」= 供給不足の可能性高、"
+    "「🟡 中（高騰のみ）」= 高騰しているが便数は多い（運賃戦略の影響も考慮が必要）"
 )
 
 med_f_sig = summary["total_flights"].median()
 
 def _signal(row):
     if row["price_level"] == "high" and row["total_flights"] < med_f_sig:
-        return "🔴 強"
+        return "🔴 強（便数少＋高騰）"
     elif row["price_level"] == "high":
-        return "🟡 中（要確認）"
+        return "🟡 中（高騰のみ）"
     elif row["price_level"] == "typical":
         return "⚪ 標準"
     else:
@@ -115,13 +115,13 @@ routes_u = sorted(summary["route_label"].unique())
 sig_cols = st.columns(len(routes_u))
 for i, route in enumerate(routes_u):
     rsub = summary[summary["route_label"] == route]
-    cnt_strong  = (rsub["シグナル"] == "🔴 強").sum()
-    cnt_caution = (rsub["シグナル"] == "🟡 中（要確認）").sum()
+    cnt_strong  = (rsub["シグナル"] == "🔴 強（便数少＋高騰）").sum()
+    cnt_caution = (rsub["シグナル"] == "🟡 中（高騰のみ）").sum()
     total       = len(rsub)
     sig_cols[i].metric(
         route,
         f"🔴 強: {cnt_strong}/{total}件",
-        delta=f"🟡 要確認: {cnt_caution}件",
+        delta=f"🟡 中: {cnt_caution}件",
         delta_color="off",
         help="強=便数少+高騰（供給不足が根拠）、中=高騰のみ（運賃戦略の影響も考慮）",
     )

@@ -10,8 +10,8 @@ from utils.loader import load_flights, load_price_history, route_summary, latest
 from utils.constants import IATA_COLOR
 
 st.set_page_config(page_title="市場構造", layout="wide", page_icon="🔍")
-st.title("3｜市場構造 — 競争環境と就航余地を読む")
-st.caption("直行便・LCC状況・便数と価格の分布・空港間比較から、就航余地を多面的に示します。")
+st.title("3｜市場構造 — 競争環境と参入余地を読む")
+st.caption("直行便・LCC状況・便数と価格の分布・空港間比較から、参入余地を多面的に示します。")
 
 flights = load_flights()
 ph_all  = load_price_history()
@@ -26,8 +26,8 @@ summary_hkg   = summary[summary["departure_iata"] == dep_iata].copy()
 
 AIRPORTS      = ["KIX", "NGO", "HND"]
 AIRPORT_LABEL = {"KIX": "関西 (KIX)", "NGO": "中部 (NGO)", "HND": "羽田 (HND)"}
-LEVEL_BG      = {"low": "#1A3E6A", "typical": "#1A3A2A", "high": "#3A2810"}
-LEVEL_BADGE   = {"low": "🔵 安値", "typical": "🟢 標準", "high": "🟠 高騰"}
+LEVEL_BG      = {"low": "#E8F4FD", "typical": "#F5F5F5", "high": "#FFF0EB"}
+LEVEL_BADGE   = {"low": "🟢 低価格", "typical": "⚪ 標準", "high": "🔴 高騰"}
 
 # ── 集計 ─────────────────────────────────────────────────
 direct_ratio = (
@@ -138,7 +138,7 @@ with tab1:
         .size().reset_index(name="便数")
         .sort_values(["route_label", "carrier_type", "airline"])
     )
-    direct_al_df["種別"] = direct_al_df["carrier_type"].map({"LCC": "🟢 LCC", "FSC": "🔵 FSC"})
+    direct_al_df["種別"] = direct_al_df["carrier_type"].map({"LCC": "🟡 LCC", "FSC": "🔵 FSC"})
     if direct_al_df.empty:
         st.info("直行便のデータがありません。")
     else:
@@ -324,7 +324,7 @@ with tab3:
             airports = [a for a in AIRPORTS if a in mx_summary["arrival_iata"].unique()]
             header_vals = ["<b>搭乗日</b>"] + [f"<b>{AIRPORT_LABEL[a]}</b>" for a in airports]
             col_vals    = [dates]
-            col_colors  = [["#162E52"] * len(dates)]
+            col_colors  = [["#E8EFF8"] * len(dates)]
 
             for airport in airports:
                 vals, colors = [], []
@@ -334,14 +334,14 @@ with tab3:
                         (mx_summary["arrival_iata"] == airport)
                     ]
                     if row.empty:
-                        vals.append("—"); colors.append("#0F2240")
+                        vals.append("—"); colors.append("#F5F5F5")
                     else:
                         lp    = row["lowest_price"].values[0]
                         tl    = row["typical_low"].values[0]
                         th    = row["typical_high"].values[0]
                         lv    = (row["price_level"].values[0] or "typical").lower()
                         fc    = int(row["flight_count"].values[0]) if pd.notna(row["flight_count"].values[0]) else 0
-                        badge = LEVEL_BADGE.get(lv, "🟢 標準")
+                        badge = LEVEL_BADGE.get(lv, "⚪ 標準")
                         if show_band and pd.notna(tl) and pd.notna(th):
                             cell = (f"¥{int(lp):,}  {badge}<br>"
                                     f"<span style='font-size:11px'>帯: ¥{int(tl):,}〜¥{int(th):,}</span><br>"
@@ -349,27 +349,27 @@ with tab3:
                         else:
                             cell = f"¥{int(lp):,}  {badge}<br><span style='font-size:11px'>{fc}便</span>"
                         vals.append(cell)
-                        colors.append(LEVEL_BG.get(lv, "#1A3A2A"))
+                        colors.append(LEVEL_BG.get(lv, "#F5F5F5"))
                 col_vals.append(vals); col_colors.append(colors)
 
             row_h = 62
             fig_mx = go.Figure(data=[go.Table(
                 columnwidth=[120] + [200] * len(airports),
                 header=dict(
-                    values=header_vals, fill_color="#0F2240",
-                    font=dict(color="#D4E4F5", size=13), align="center",
-                    height=38, line=dict(color="#1E3A64", width=1),
+                    values=header_vals, fill_color="#D4E0F0",
+                    font=dict(color="#333333", size=13), align="center",
+                    height=38, line=dict(color="#CCCCCC", width=1),
                 ),
                 cells=dict(
                     values=col_vals, fill_color=col_colors,
-                    font=dict(color="#D4E4F5", size=12), align="center",
-                    height=row_h, line=dict(color="#1E3A64", width=1),
+                    font=dict(color="#333333", size=12), align="center",
+                    height=row_h, line=dict(color="#CCCCCC", width=1),
                 ),
             )])
             fig_mx.update_layout(
                 margin=dict(l=0, r=0, t=4, b=4),
                 height=38 + row_h * len(dates) + 16,
-                paper_bgcolor="#0B1829",
+                paper_bgcolor="white",
             )
             st.plotly_chart(fig_mx, use_container_width=True)
 

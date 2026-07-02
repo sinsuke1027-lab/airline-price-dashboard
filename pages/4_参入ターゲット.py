@@ -43,7 +43,7 @@ ngo_prices    = df_lat[df_lat["arrival_iata"] == target_arr].groupby("flight_dat
 avg_ngo_price = ngo_prices.mean() if not ngo_prices.empty else 0
 ngo_pl        = df_lat[df_lat["arrival_iata"] == target_arr]["route_price_level"].mode()
 ngo_pl_str    = ngo_pl.iloc[0] if not ngo_pl.empty else "不明"
-level_label   = {"low": "低価格", "typical": "標準", "high": "高騰中"}
+level_label   = {"low": "低価格", "typical": "標準", "high": "高騰"}
 
 target_airlines = set(df_lat[df_lat["arrival_iata"] == target_arr]["airline"].unique())
 ref_airlines    = set(df_lat[df_lat["arrival_iata"].isin(ref_arrs)]["airline"].unique())
@@ -73,6 +73,19 @@ if missing:
     if lcc_m:
         st.warning(f"⚠️ **{dep_iata}発LCC未就航（{target_arr}）: {', '.join(lcc_m)}**  "
                    f"— LCC参入で価格競争力・旅客数の押し上げ効果が期待できます。")
+
+_med_f_sig4 = summary["total_flights"].median()
+_tgt_summary = summary[summary["arrival_iata"] == target_arr]
+if not _tgt_summary.empty:
+    _strong4  = int(((_tgt_summary["price_level"] == "high") & (_tgt_summary["total_flights"] < _med_f_sig4)).sum())
+    _caution4 = int(((_tgt_summary["price_level"] == "high") & (_tgt_summary["total_flights"] >= _med_f_sig4)).sum())
+    _total4   = len(_tgt_summary)
+    st.caption(
+        f"📊 **需要シグナル（{dep_iata}→{target_arr}）**: "
+        f"🔴 強（便数少＋高騰）: {_strong4}/{_total4}件 ／ "
+        f"🟡 中（高騰のみ）: {_caution4}件 — "
+        "詳細は「需要の実証」「市場構造」ページを参照"
+    )
 
 st.markdown("---")
 

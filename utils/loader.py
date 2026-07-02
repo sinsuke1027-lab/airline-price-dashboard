@@ -99,4 +99,4 @@ def route_summary(df: pd.DataFrame) -> pd.DataFrame:
 
 PRICE_LEVEL_ORDER = ["low", "typical", "high"]
 PRICE_LEVEL_COLOR = {"low": "#4DC4FF", "typical": "#F6AA00", "high": "#FF4B00"}
-PRICE_LEVEL_LABEL = {"low": "低", "typical": "標準", "high": "高騰"}
+PRICE_LEVEL_LABEL = {"low": "低価格", "typical": "標準", "high": "高騰"}
