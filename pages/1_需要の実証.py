@@ -540,10 +540,18 @@ with tab3:
     _REV_PERIODS  = [90, 60, 30, 14]
     _REV_DEFAULTS = [0.15, 0.25, 0.35, 0.25]
 
+    # flights データのある月だけ選択肢にするため selectbox より前に計算
+    _fl_all = flights[flights["departure_iata"] == "HKG"].copy()
+    if "search_date" in _fl_all.columns:
+        _fl_all["_da"] = (
+            pd.to_datetime(_fl_all["flight_date"]) - pd.to_datetime(_fl_all["search_date"])
+        ).dt.days
+    _fl_all["_fm"] = _fl_all["flight_date"].dt.to_period("M").astype(str)
+
     _set_col, _slid_col = st.columns([1, 2])
 
     with _set_col:
-        _rev_month_opts = sorted(ph_hkg["flight_date"].dt.to_period("M").astype(str).unique())
+        _rev_month_opts = sorted(_fl_all["_fm"].unique())
         _rev_month = st.selectbox(
             "搭乗月", _rev_month_opts,
             index=max(len(_rev_month_opts) - 1, 0),
@@ -566,12 +574,6 @@ with tab3:
             + "　".join([f"**{d}日前** {c:.0%}" for d, c in zip(_REV_PERIODS, _coefs)])
         )
 
-    _fl_all = flights[flights["departure_iata"] == "HKG"].copy()
-    if "search_date" in _fl_all.columns:
-        _fl_all["_da"] = (
-            pd.to_datetime(_fl_all["flight_date"]) - pd.to_datetime(_fl_all["search_date"])
-        ).dt.days
-    _fl_all["_fm"] = _fl_all["flight_date"].dt.to_period("M").astype(str)
     _fl_m = _fl_all[_fl_all["_fm"] == _rev_month]
 
     _price_at = {}
