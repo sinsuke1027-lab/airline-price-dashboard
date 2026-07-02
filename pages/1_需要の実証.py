@@ -589,9 +589,10 @@ with tab3:
         for _r, _grp in _ph_d.groupby("route_label"):
             _route_price_at[(_r, _d)] = float(_grp["price_jpy"].mean())
 
-    _fl_snap_m = _fl_m[_fl_m["_da"].between(snap_db - _TOL, snap_db + _TOL)]
+    # 便数カウントは観測タイミングに依存しないため月全体のデータを使う
+    # （snap窓で絞ると遠い将来の搭乗月がすべて除外されてしまう）
     _cnt_ser = (
-        _fl_snap_m.drop_duplicates(subset=["flight_date", "airline", "route_label"])
+        _fl_m.drop_duplicates(subset=["flight_date", "airline", "route_label"])
         .groupby(["airline", "route_label"]).size()
     )
 
@@ -606,12 +607,12 @@ with tab3:
             _rev_mat[(_a, _r)] = int(_rev / 10_000)
 
     if not _rev_mat:
-        st.info("選択月のデータが不足しています。データモードや観測時点を確認してください。")
+        st.info("選択月のデータが不足しています。")
     else:
         _rev_airlines = sorted({a for (a, r) in _rev_mat})
         _rev_routes   = sorted({r for (a, r) in _rev_mat})
-        _ct_map_rev   = (_fl_snap_m.groupby("airline")["carrier_type"].first().to_dict()
-                         if "carrier_type" in _fl_snap_m.columns else {})
+        _ct_map_rev   = (_fl_m.groupby("airline")["carrier_type"].first().to_dict()
+                         if "carrier_type" in _fl_m.columns else {})
         _atotals      = {a: sum(_rev_mat.get((a, r), 0) for r in _rev_routes)
                          for a in _rev_airlines}
         _rev_airlines = sorted(_rev_airlines, key=lambda a: _atotals[a], reverse=True)
