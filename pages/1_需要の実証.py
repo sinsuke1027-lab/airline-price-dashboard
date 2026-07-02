@@ -551,7 +551,17 @@ with tab3:
     _set_col, _slid_col = st.columns([1, 2])
 
     with _set_col:
-        _rev_month_opts = sorted(_fl_all["_fm"].unique())
+        # 収益算出に必要な価格データが存在する月のみ選択肢に含める
+        _rev_month_opts = []
+        for _m in sorted(_fl_all["_fm"].unique()):
+            _ph_chk = ph_hkg[ph_hkg["flight_date"].dt.to_period("M").astype(str) == _m]
+            _fl_chk = _fl_all[_fl_all["_fm"] == _m]
+            if any(
+                not _ph_chk[_ph_chk["days_before_dep"].between(_d - 15, _d + 15)].empty
+                or not _fl_chk[_fl_chk["_da"].between(_d - 15, _d + 15)].empty
+                for _d in _REV_PERIODS
+            ):
+                _rev_month_opts.append(_m)
         _rev_month = st.selectbox(
             "搭乗月", _rev_month_opts,
             index=max(len(_rev_month_opts) - 1, 0),
